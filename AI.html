@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Moneyflow | Personal Finance</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233c;
+      --muted: #8993a7;
+      --line: #edf0f5;
+      --purple: #6958e8;
+      --green: #28a879;
+      --red: #e56b79;
+      --surface: #ffffff;
+      --background: #f5f7fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+    }
+
+    button { font: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 238px minmax(0, 1fr);
+      min-height: 100vh;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      padding: 30px 18px 22px;
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 0 0 46px 8px;
+      font-size: 19px;
+      font-weight: 750;
+      letter-spacing: -0.7px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 35px;
+      height: 35px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--purple);
+      color: white;
+      font-size: 19px;
+    }
+
+    .nav-label {
+      margin: 0 0 12px 12px;
+      color: #a4acbb;
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 1.15px;
+      text-transform: uppercase;
+    }
+
+    .nav { display: grid; gap: 5px; }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-height: 44px;
+      padding: 0 13px;
+      border-radius: 10px;
+      color: #79849a;
+      font-weight: 550;
+      text-decoration: none;
+    }
+
+    .nav a.active {
+      background: #f0efff;
+      color: var(--purple);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 19px;
+      color: currentColor;
+      font-size: 17px;
+      text-align: center;
+    }
+
+    .sidebar-bottom { margin-top: auto; }
+
+    .tip {
+      padding: 17px;
+      border: 1px solid #eeecff;
+      border-radius: 14px;
+      background: #f8f7ff;
+    }
+
+    .tip-icon {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      margin-bottom: 12px;
+      place-items: center;
+      border-radius: 10px;
+      background: #e9e6ff;
+      color: var(--purple);
+    }
+
+    .tip strong { display: block; margin-bottom: 6px; font-size: 13px; }
+    .tip p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+    main { min-width: 0; padding: 31px clamp(20px, 4vw, 54px) 40px; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 34px;
+    }
+
+    .welcome h1 { margin: 0 0 6px; font-size: 25px; letter-spacing: -0.8px; }
+    .welcome p { margin: 0; color: var(--muted); }
+
+    .profile { display: flex; align-items: center; gap: 11px; }
+    .avatar {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 50%;
+      background: #e9e5ff;
+      color: #6554d7;
+      font-weight: 750;
+    }
+    .profile-name { font-size: 13px; font-weight: 700; }
+    .profile-role { margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 17px;
+    }
+
+    .section-heading h2 { margin: 0; font-size: 16px; letter-spacing: -0.3px; }
+
+    .period {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--surface);
+      color: #68748a;
+      font-size: 12px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 27px;
+    }
+
+    .card, .panel {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--surface);
+      box-shadow: 0 4px 16px rgba(37, 48, 77, 0.025);
+    }
+
+    .summary-card { min-width: 0; padding: 19px; }
+    .summary-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .summary-label { color: #788399; font-size: 12px; font-weight: 600; }
+    .summary-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    .income-icon { background: #e9f8f1; color: var(--green); }
+    .expense-icon { background: #fff0f1; color: var(--red); }
+    .balance-icon { background: #f0efff; color: var(--purple); }
+    .amount { margin: 15px 0 9px; font-size: clamp(20px, 2.2vw, 27px); font-weight: 750; letter-spacing: -1px; }
+    .change { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
+    .positive { color: var(--green); font-weight: 700; }
+    .negative { color: var(--red); font-weight: 700; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.9fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .panel { padding: 21px; }
+    .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .panel-heading h2 { margin: 0; font-size: 15px; }
+    .legend { display: flex; gap: 16px; color: #8993a7; font-size: 11px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); }
+    .dot.income-dot { background: #61cba0; }
+
+    .chart {
+      position: relative;
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      height: 190px;
+      margin: 23px 0 0;
+      padding: 0 3px 25px;
+      border-bottom: 1px solid var(--line);
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 45px, #f1f3f7 46px, transparent 47px);
+    }
+
+    .bar-group {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 5px;
+      width: 9%;
+      height: 100%;
+    }
+
+    .bar {
+      width: min(15px, 42%);
+      min-height: 8px;
+      border-radius: 5px 5px 2px 2px;
+      background: #7466ed;
+    }
+
+    .bar.income { background: #75d4aa; }
+    .bar-group:nth-child(1) .bar.expense { height: 46%; }
+    .bar-group:nth-child(1) .bar.income { height: 64%; }
+    .bar-group:nth-child(2) .bar.expense { height: 53%; }
+    .bar-group:nth-child(2) .bar.income { height: 72%; }
+    .bar-group:nth-child(3) .bar.expense { height: 42%; }
+    .bar-group:nth-child(3) .bar.income { height: 58%; }
+    .bar-group:nth-child(4) .bar.expense { height: 67%; }
+    .bar-group:nth-child(4) .bar.income { height: 75%; }
+    .bar-group:nth-child(5) .bar.expense { height: 50%; }
+    .bar-group:nth-child(5) .bar.income { height: 68%; }
+    .bar-group:nth-child(6) .bar.expense { height: 38%; }
+    .bar-group:nth-child(6) .bar.income { height: 61%; }
+
+    .months {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 9px;
+      color: #9aa3b2;
+      font-size: 10px;
+    }
+
+    .budget-total { margin: 22px 0 6px; font-size: 25px; font-weight: 750; letter-spacing: -0.8px; }
+    .budget-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 11px; }
+    .budget-row { display: flex; justify-content: space-between; gap: 12px; margin: 16px 0 8px; font-size: 11px; }
+    .budget-row span:first-child { color: #68748a; font-weight: 600; }
+    .budget-row span:last-child { color: #929bad; }
+    .progress { height: 7px; overflow: hidden; border-radius: 10px; background: #f0f1f6; }
+    .progress span { display: block; height: 100%; border-radius: inherit; background: var(--purple); }
+    .progress.green span { background: #58c899; }
+    .progress.orange span { background: #f2ad62; }
+    .budget-note { margin: 18px 0 0; padding: 11px 12px; border-radius: 9px; background: #f7f6ff; color: #7165c7; font-size: 11px; line-height: 1.5; }
+
+    .transactions { overflow: hidden; }
+    .transaction-list { margin-top: 14px; }
+    .transaction {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.4fr) minmax(90px, 1fr) minmax(86px, 0.8fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 61px;
+      border-top: 1px solid #f1f2f6;
+    }
+    .merchant { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .merchant-icon {
+      display: grid;
+      width: 35px;
+      height: 35px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 11px;
+      background: #f4f3ff;
+      color: #6d5fe0;
+    }
+    .merchant strong, .category, .date { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .merchant strong { font-size: 12px; }
+    .merchant small { display: block; margin-top: 3px; color: #9aa3b2; font-size: 10px; }
+    .category, .date { color: #8590a3; font-size: 11px; }
+    .transaction-amount { text-align: right; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .transaction-amount.in { color: var(--green); }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 76px minmax(0, 1fr); }
+      .sidebar { align-items: center; padding-right: 10px; padding-left: 10px; }
+      .brand { margin: 0 0 42px; }
+      .brand-name, .nav-label, .nav-text, .tip { display: none; }
+      .nav { width: 100%; }
+      .nav a { justify-content: center; padding: 0; }
+      .nav-icon { font-size: 19px; }
+    }
+
+    @media (max-width: 650px) {
+      .app { display: block; }
+      .sidebar { position: sticky; z-index: 2; top: 0; flex-direction: row; justify-content: space-between; padding: 10px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { margin: 0; }
+      .nav-label, .sidebar-bottom { display: none; }
+      .nav { display: flex; width: auto; gap: 3px; }
+      .nav a { width: 40px; min-height: 40px; }
+      main { padding: 24px 16px 32px; }
+      .topbar { margin-bottom: 25px; }
+      .welcome h1 { font-size: 21px; }
+      .profile-copy { display: none; }
+      .summary-grid { grid-template-columns: 1fr; gap: 10px; }
+      .summary-card { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 15px 17px; }
+      .summary-top { grid-column: 1 / -1; }
+      .amount { margin: 11px 0 0; font-size: 22px; }
+      .change { justify-self: end; margin-top: 12px; }
+      .content-grid { grid-template-columns: 1fr; }
+      .panel { padding: 17px; }
+      .transaction { grid-template-columns: minmax(0, 1fr) auto; gap: 7px 10px; padding: 10px 0; }
+      .merchant { grid-column: 1; grid-row: 1 / 3; }
+      .category { display: none; }
+      .date { grid-column: 2; grid-row: 1; text-align: right; }
+      .transaction-amount { grid-column: 2; grid-row: 2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">₹</span><span class="brand-name">Moneyflow</span></div>
+      <nav class="nav" aria-label="Main menu">
+        <a class="active" href="AI.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▦</span><span class="nav-text">Home</span></a>
+        <a href="Income.html"><span class="nav-icon" aria-hidden="true">↙</span><span class="nav-text">Income</span></a>
+        <a href="Outcome.html"><span class="nav-icon" aria-hidden="true">↗</span><span class="nav-text">Expenses</span></a>
+        <a href="History.html"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-text">History</span></a>
+        <a href="Profile.html"><span class="nav-icon" aria-hidden="true">●</span><span class="nav-text">Profile</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="tip">
+          <div class="tip-icon" aria-hidden="true">✦</div>
+          <strong>Small steps add up</strong>
+          <p>You're building a great money habit. Keep tracking your spending.</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="overview">
+      <header class="topbar">
+        <div class="welcome">
+          <h1>Good morning, Bobby 👋</h1>
+          <p>Here’s your money at a glance.</p>
+        </div>
+        <div class="profile" aria-label="Signed in as Bobby Morgan">
+          <div class="avatar" aria-hidden="true">BM</div>
+          <div class="profile-copy"><div class="profile-name">Bobby Morgan</div><div class="profile-role">Personal account</div></div>
+        </div>
+      </header>
+
+      <section aria-labelledby="summary-title">
+        <div class="section-heading">
+          <h2 id="summary-title">Your finances</h2>
+          <button class="period" type="button">This month &nbsp;⌄</button>
+        </div>
+        <div class="summary-grid">
+          <article class="card summary-card">
+            <div class="summary-top"><span class="summary-label">Total balance</span><span class="summary-icon balance-icon" aria-hidden="true">◈</span></div>
+            <div class="amount">₹12,840.50</div>
+            <div class="change"><span class="positive">↗ 8.2%</span><span>vs. last month</span></div>
+          </article>
+          <article class="card summary-card">
+            <div class="summary-top"><span class="summary-label">Income</span><span class="summary-icon income-icon" aria-hidden="true">↓</span></div>
+            <div class="amount">₹5,420.00</div>
+            <div class="change"><span class="positive">↗ 4.5%</span><span>vs. last month</span></div>
+          </article>
+          <article class="card summary-card">
+            <div class="summary-top"><span class="summary-label">Expenses</span><span class="summary-icon expense-icon" aria-hidden="true">↑</span></div>
+            <div class="amount">₹2,180.75</div>
+            <div class="change"><span class="negative">↗ 2.1%</span><span>vs. last month</span></div>
+          </article>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel" id="reports" aria-labelledby="cashflow-title">
+          <div class="panel-heading">
+            <h2 id="cashflow-title">Income &amp; expenses</h2>
+            <div class="legend" aria-label="Chart legend">
+              <span><i class="dot income-dot"></i>Income</span>
+              <span><i class="dot"></i>Expenses</span>
+            </div>
+          </div>
+          <div class="chart" role="img" aria-label="Bar chart comparing monthly income and expenses from January to June">
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+            <div class="bar-group"><span class="bar income"></span><span class="bar expense"></span></div>
+          </div>
+          <div class="months" aria-hidden="true"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+        </section>
+
+        <section class="panel" id="budgets" aria-labelledby="budget-title">
+          <div class="panel-heading"><h2 id="budget-title">Monthly outcome</h2><span class="summary-icon balance-icon" aria-hidden="true">◎</span></div>
+          <div class="budget-total">₹3,239.25</div>
+          <p class="budget-subtitle">Income left after expenses</p>
+          <div class="budget-row"><span>Monthly budget used</span><span>₹2,180.75 / ₹3,000</span></div>
+          <div class="progress"><span style="width: 73%"></span></div>
+          <div class="budget-row"><span>Saved this month</span><span>₹1,200 / ₹1,500</span></div>
+          <div class="progress green"><span style="width: 80%"></span></div>
+          <p class="budget-note">You’ve kept <strong>60%</strong> of your income this month. Nice work!</p>
+        </section>
+      </div>
+
+      <section class="panel transactions" id="transactions" aria-labelledby="transactions-title">
+        <div class="panel-heading">
+          <h2 id="transactions-title">Recent transactions</h2>
+          <button class="period" type="button">View all &nbsp;→</button>
+        </div>
+        <div class="transaction-list">
+          <article class="transaction">
+            <div class="merchant"><span class="merchant-icon" aria-hidden="true">▣</span><span><strong>Whole Foods Market</strong><small>Groceries</small></span></div>
+            <span class="category">Food &amp; dining</span><time class="date" datetime="2026-06-15">Jun 15, 2026</time><span class="transaction-amount">−₹84.32</span>
+          </article>
+          <article class="transaction">
+            <div class="merchant"><span class="merchant-icon" aria-hidden="true">↗</span><span><strong>Monthly salary</strong><small>Acme Studio</small></span></div>
+            <span class="category">Income</span><time class="date" datetime="2026-06-14">Jun 14, 2026</time><span class="transaction-amount in">+₹4,800.00</span>
+          </article>
+          <article class="transaction">
+            <div class="merchant"><span class="merchant-icon" aria-hidden="true">♫</span><span><strong>Spotify Premium</strong><small>Monthly subscription</small></span></div>
+            <span class="category">Subscriptions</span><time class="date" datetime="2026-06-12">Jun 12, 2026</time><span class="transaction-amount">−₹10.99</span>
+          </article>
+          <article class="transaction">
+            <div class="merchant"><span class="merchant-icon" aria-hidden="true">☕</span><span><strong>Blue Bottle Coffee</strong><small>Downtown</small></span></div>
+            <span class="category">Food &amp; dining</span><time class="date" datetime="2026-06-11">Jun 11, 2026</time><span class="transaction-amount">−₹6.50</span>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
